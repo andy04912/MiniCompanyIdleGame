@@ -10,6 +10,11 @@ func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
 	EventBus.month_passed.connect(_on_month_passed)
 
+func reset() -> void:
+	_work_experience_accumulated = 0.0
+	_days_worked = 0
+	_monthly_salary_pending = false
+
 func apply_for_job(job_id: String) -> bool:
 	var job := JobDatabase.get_job_by_id(job_id)
 	if job.is_empty():

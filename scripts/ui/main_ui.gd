@@ -21,7 +21,6 @@ var _notification_timer: float = 0.0
 
 func _ready() -> void:
 	EventBus.show_notification.connect(_on_show_notification)
-	EventBus.game_tick.connect(_on_game_tick)
 	EventBus.money_changed.connect(_on_money_changed)
 	EventBus.day_passed.connect(_on_day_passed)
 
@@ -46,9 +45,9 @@ func _on_character_created() -> void:
 	TimeManager.is_paused = false
 	_update_all_labels()
 
-func _on_game_tick(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if _notification_timer > 0:
-		_notification_timer -= _delta
+		_notification_timer -= delta
 		if _notification_timer <= 0:
 			notification_label.visible = false
 

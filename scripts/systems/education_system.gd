@@ -11,6 +11,9 @@ var _study_days: int = 0
 func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
 
+func reset() -> void:
+	_study_days = 0
+
 func start_masters() -> bool:
 	var character := GameManager.character
 

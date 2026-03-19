@@ -104,12 +104,14 @@ static func get_tier_requirements(tier: CompanyTier) -> Dictionary:
 			return {}
 
 static func create_new_company(option: Dictionary) -> Dictionary:
+	var base_rev: float = option.get("base_revenue", 100.0)
 	return {
 		"name": option.get("name", "我的公司"),
 		"business_type": option.get("type", BusinessType.SERVICE),
 		"tier": CompanyTier.MICRO,
-		"revenue_per_day": option.get("base_revenue", 100.0),
-		"expenses_per_day": option.get("base_revenue", 100.0) * 0.3,
+		"base_revenue_per_day": base_rev,
+		"revenue_per_day": base_rev,
+		"expenses_per_day": base_rev * 0.3,
 		"employees": 0,
 		"max_employees": 3,
 		"branches": 1,

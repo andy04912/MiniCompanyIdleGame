@@ -56,11 +56,17 @@ func do_prestige() -> Dictionary:
 	# 儲存轉生資料
 	SaveManager.save_prestige_data(prestige_info)
 
+	# 重置所有遊戲狀態（角色、子系統）
+	GameManager.reset_all()
+
 	# 重置遊戲時間
 	TimeManager.current_year = 2026
 	TimeManager.current_month = 6
 	TimeManager.current_day = 1
 	TimeManager.total_days_played = 0
+
+	# 暫停時間直到新遊戲開始
+	TimeManager.is_paused = true
 
 	# 刪除一般存檔
 	SaveManager.delete_save()

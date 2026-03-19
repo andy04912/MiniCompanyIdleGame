@@ -51,7 +51,7 @@ func _calculate_offline_progress(seconds: float) -> void:
 	var offline_days := seconds / TimeManager.SECONDS_PER_GAME_DAY * offline_efficiency
 
 	# 最多計算7天離線收益
-	offline_days = minf(offline_days, 7.0 * 24.0)
+	offline_days = minf(offline_days, 7.0)
 
 	var total_offline_income := 0.0
 

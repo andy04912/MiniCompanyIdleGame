@@ -6,6 +6,9 @@ func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
 	EventBus.month_passed.connect(_on_month_passed)
 
+func reset() -> void:
+	pass  # Company state lives in character.company, reset via CharacterData
+
 func found_company(option: Dictionary) -> bool:
 	var character := GameManager.character
 
@@ -159,7 +162,7 @@ func _recalculate_revenue() -> void:
 		return
 
 	var company: Dictionary = character.company
-	var base: float = company.get("revenue_per_day", 100.0)
+	var base: float = company.get("base_revenue_per_day", 100.0)
 
 	# 員工加成
 	var employee_bonus := 1.0 + company["employees"] * 0.15

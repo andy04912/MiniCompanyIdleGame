@@ -69,7 +69,7 @@ func get_age() -> int:
 	# 角色出生年 = 起始年 - 22（大學畢業年齡）
 	var birth_year := GameManager.character.birth_year
 	var age := current_year - birth_year
-	if current_month < 1:  # 簡化：假設1月生日
+	if current_month < 6:  # 假設6月畢業 = 6月生日
 		age -= 1
 	return age
 

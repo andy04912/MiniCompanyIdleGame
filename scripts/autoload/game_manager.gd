@@ -32,14 +32,20 @@ func _ready() -> void:
 	EventBus.month_passed.connect(_on_month_passed)
 	EventBus.year_passed.connect(_on_year_passed)
 
-func start_new_game(char_name: String, gender: CharacterData.Gender) -> void:
+func reset_all() -> void:
+	## 完全重置所有狀態（轉生用）
 	character = CharacterData.new()
+	is_game_started = false
+	job_system.reset()
+	company_system.reset()
+	education_system.reset()
+	relationship_system.reset()
+
+func start_new_game(char_name: String, gender: CharacterData.Gender) -> void:
+	reset_all()
 	character.character_name = char_name
 	character.gender = gender
 	character.birth_year = TimeManager.current_year - 22
-
-	# 套用轉生加成
-	# (prestige_bonuses 在轉生時已設定好)
 
 	is_game_started = true
 	EventBus.character_created.emit({

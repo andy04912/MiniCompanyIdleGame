@@ -8,6 +8,10 @@ var _can_meet_today: bool = true
 func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
 
+func reset() -> void:
+	_dating_days = 0
+	_can_meet_today = true
+
 func try_meet_someone() -> void:
 	var character := GameManager.character
 	if character.relationship_status != "single":
