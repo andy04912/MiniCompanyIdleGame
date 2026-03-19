@@ -1,0 +1,688 @@
+[gd_scene load_steps=7 format=3 uid="uid://cmain"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_ui.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/stats_panel.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/ui/job_panel.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ui/company_panel.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/life_panel.gd" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/character_creation.tscn" id="6"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.12, 0.14, 0.2, 1)
+
+[node name="CharacterCreation" parent="." instance=ExtResource("6")]
+layout_mode = 1
+
+[node name="GameUI" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 0
+
+[node name="TopBar" type="PanelContainer" parent="GameUI"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
+
+[node name="StatusPanel" type="HBoxContainer" parent="GameUI/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="NameLabel" type="Label" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "玩家 (♂)"
+theme_override_font_sizes/font_size = 16
+
+[node name="AgeLabel" type="Label" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "22 歲"
+theme_override_font_sizes/font_size = 16
+
+[node name="DateLabel" type="Label" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "2026年6月1日"
+theme_override_font_sizes/font_size = 16
+
+[node name="MoneyLabel" type="Label" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "資金: $5000"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 0.9, 0, 1)
+
+[node name="JobLabel" type="Label" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "無業"
+theme_override_font_sizes/font_size = 16
+
+[node name="Spacer" type="Control" parent="GameUI/TopBar/StatusPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpeedButton" type="Button" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "x1"
+custom_minimum_size = Vector2(60, 0)
+
+[node name="SaveButton" type="Button" parent="GameUI/TopBar/StatusPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "儲存"
+custom_minimum_size = Vector2(60, 0)
+
+[node name="NotificationLabel" type="Label" parent="GameUI"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+custom_minimum_size = Vector2(0, 30)
+theme_override_font_sizes/font_size = 14
+
+[node name="TabContainer" type="TabContainer" parent="GameUI"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="角色狀態" type="ScrollContainer" parent="GameUI/TabContainer"]
+layout_mode = 2
+
+[node name="StatsPanel" type="VBoxContainer" parent="GameUI/TabContainer/角色狀態"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+script = ExtResource("2")
+
+[node name="StatsTitle" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+text = "═══ 基本屬性 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="IntRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/IntRow"]
+layout_mode = 2
+text = "智力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="IntelligenceBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/IntRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 10.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="ChaRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/ChaRow"]
+layout_mode = 2
+text = "魅力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="CharismaBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/ChaRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 10.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="StaRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/StaRow"]
+layout_mode = 2
+text = "體力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="StaminaBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/StaRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 10.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="LukRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/LukRow"]
+layout_mode = 2
+text = "運氣"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="LuckBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/LukRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 10.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="LeaRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/LeaRow"]
+layout_mode = 2
+text = "領導力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="LeadershipBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/LeaRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 5.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="CreRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/CreRow"]
+layout_mode = 2
+text = "創造力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="CreativityBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/CreRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 5.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="Sep1" type="HSeparator" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="StatusTitle" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+text = "═══ 狀態 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="HapRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/HapRow"]
+layout_mode = 2
+text = "幸福"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="HappinessBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/HapRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 50.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="HeaRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/HeaRow"]
+layout_mode = 2
+text = "健康"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="HealthBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/HeaRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="EnRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/EnRow"]
+layout_mode = 2
+text = "精力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="EnergyBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/EnRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="StrRow" type="HBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/StrRow"]
+layout_mode = 2
+text = "壓力"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="StressBar" type="ProgressBar" parent="GameUI/TabContainer/角色狀態/StatsPanel/StrRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 0.0
+show_percentage = true
+custom_minimum_size = Vector2(200, 25)
+
+[node name="Sep2" type="HSeparator" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="SkillsTitle" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+text = "═══ 技能 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="SkillsContainer" type="VBoxContainer" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="NoSkillLabel" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel/SkillsContainer"]
+layout_mode = 2
+text = "尚未學習任何技能"
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="Sep3" type="HSeparator" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+
+[node name="LifeTitle" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+layout_mode = 2
+text = "═══ 生活 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="EducationLabel" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "學歷: 大學"
+
+[node name="RelationshipLabel" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "感情: 單身"
+
+[node name="ChildrenLabel" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "子女: 無"
+
+[node name="StatsPrestigeLabel" type="Label" parent="GameUI/TabContainer/角色狀態/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+theme_override_colors/font_color = Color(1, 0.85, 0, 1)
+
+[node name="工作" type="ScrollContainer" parent="GameUI/TabContainer"]
+layout_mode = 2
+
+[node name="JobPanel" type="VBoxContainer" parent="GameUI/TabContainer/工作"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("3")
+
+[node name="JobTitle" type="Label" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+text = "═══ 目前工作 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="CurrentJobLabel" type="Label" parent="GameUI/TabContainer/工作/JobPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "目前無工作"
+theme_override_font_sizes/font_size = 16
+
+[node name="SalaryLabel" type="Label" parent="GameUI/TabContainer/工作/JobPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+
+[node name="PerfRow" type="HBoxContainer" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+
+[node name="PerfLabel" type="Label" parent="GameUI/TabContainer/工作/JobPanel/PerfRow"]
+layout_mode = 2
+text = "工作表現"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="PerformanceBar" type="ProgressBar" parent="GameUI/TabContainer/工作/JobPanel/PerfRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 50.0
+show_percentage = true
+
+[node name="PromoRow" type="HBoxContainer" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+
+[node name="PromoLabel" type="Label" parent="GameUI/TabContainer/工作/JobPanel/PromoRow"]
+layout_mode = 2
+text = "升遷進度"
+custom_minimum_size = Vector2(80, 0)
+
+[node name="PromotionBar" type="ProgressBar" parent="GameUI/TabContainer/工作/JobPanel/PromoRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 0.0
+show_percentage = true
+
+[node name="ButtonRow" type="HBoxContainer" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PromoteButton" type="Button" parent="GameUI/TabContainer/工作/JobPanel/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "申請升遷"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="QuitButton" type="Button" parent="GameUI/TabContainer/工作/JobPanel/ButtonRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "辭職"
+custom_minimum_size = Vector2(80, 35)
+
+[node name="Sep" type="HSeparator" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+
+[node name="AvailTitle" type="Label" parent="GameUI/TabContainer/工作/JobPanel"]
+layout_mode = 2
+text = "═══ 可應徵的工作 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="JobList" type="VBoxContainer" parent="GameUI/TabContainer/工作/JobPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="事業" type="ScrollContainer" parent="GameUI/TabContainer"]
+layout_mode = 2
+
+[node name="CompanyPanel" type="VBoxContainer" parent="GameUI/TabContainer/事業"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("4")
+
+[node name="NoCompanyContainer" type="VBoxContainer" parent="GameUI/TabContainer/事業/CompanyPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/NoCompanyContainer"]
+layout_mode = 2
+text = "═══ 創業選項 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="Hint" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/NoCompanyContainer"]
+layout_mode = 2
+text = "累積足夠的技能和資金後，可以開始創業！"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="StartupList" type="VBoxContainer" parent="GameUI/TabContainer/事業/CompanyPanel/NoCompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CompanyContainer" type="VBoxContainer" parent="GameUI/TabContainer/事業/CompanyPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 8
+
+[node name="CompTitle" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+text = "═══ 我的公司 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="CompanyNameLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "公司名稱"
+theme_override_font_sizes/font_size = 16
+
+[node name="CompanyTierLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "規模: 個人工作室"
+
+[node name="Sep1" type="HSeparator" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+
+[node name="RevenueLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "日營收: $0"
+
+[node name="ExpensesLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "日支出: $0"
+
+[node name="ProfitLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "日利潤: $0"
+
+[node name="Sep2" type="HSeparator" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+
+[node name="EmployeesLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "員工: 0 / 3"
+
+[node name="BranchesLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "分店: 1"
+
+[node name="QualityLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "品質: 10"
+
+[node name="ReputationLabel" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "信譽: 10"
+
+[node name="Sep3" type="HSeparator" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+
+[node name="ButtonsTitle" type="Label" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+text = "═══ 經營操作 ═══"
+horizontal_alignment = 1
+
+[node name="Buttons" type="GridContainer" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer"]
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+
+[node name="HireButton" type="Button" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "僱用員工"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="UpgradeButton" type="Button" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "公司升級"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="BranchButton" type="Button" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "開分店"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="MarketingButton" type="Button" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "行銷投資"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="ImproveButton" type="Button" parent="GameUI/TabContainer/事業/CompanyPanel/CompanyContainer/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "提升品質"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="生活" type="ScrollContainer" parent="GameUI/TabContainer"]
+layout_mode = 2
+
+[node name="LifePanel" type="VBoxContainer" parent="GameUI/TabContainer/生活"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("5")
+
+[node name="EduTitle" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+text = "═══ 教育進修 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="EducationStatusLabel" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "大學學歷"
+
+[node name="StudyProgressBar" type="ProgressBar" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 100.0
+value = 0.0
+show_percentage = true
+visible = false
+
+[node name="MastersButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "攻讀碩士"
+custom_minimum_size = Vector2(200, 35)
+
+[node name="DropOutButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "中斷學業"
+visible = false
+custom_minimum_size = Vector2(200, 35)
+
+[node name="Sep1" type="HSeparator" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+
+[node name="RelTitle" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+text = "═══ 感情生活 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="RelationshipStatusLabel" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "單身"
+
+[node name="AffectionBar" type="ProgressBar" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 100.0
+value = 0.0
+show_percentage = true
+visible = false
+
+[node name="RelButtons" type="HBoxContainer" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MeetButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel/RelButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "認識新朋友"
+custom_minimum_size = Vector2(120, 35)
+
+[node name="DateButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel/RelButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "約會"
+visible = false
+custom_minimum_size = Vector2(80, 35)
+
+[node name="ProposeButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel/RelButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "求婚"
+visible = false
+custom_minimum_size = Vector2(80, 35)
+
+[node name="ChildButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel/RelButtons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "生小孩"
+visible = false
+custom_minimum_size = Vector2(80, 35)
+
+[node name="Sep2" type="HSeparator" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+
+[node name="PresTitle" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+layout_mode = 2
+text = "═══ 轉生 ═══"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="PrestigeInfoLabel" type="Label" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "轉生條件不足"
+autowrap_mode = 2
+
+[node name="PrestigeButton" type="Button" parent="GameUI/TabContainer/生活/LifePanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "轉生重來"
+disabled = true
+custom_minimum_size = Vector2(200, 45)
