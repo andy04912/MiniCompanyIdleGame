@@ -1,0 +1,68 @@
+name: Deploy Web Build to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Godot
+        run: |
+          GODOT_VERSION="4.4"
+          GODOT_RELEASE="stable"
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
+          wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz" -O templates.tpz
+          unzip -q godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64
+          mv Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64 /usr/local/bin/godot
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          unzip -q templates.tpz -d templates_temp
+          mv templates_temp/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/
+          rm -rf templates_temp templates.tpz godot.zip
+
+      - name: Import project
+        run: |
+          godot --headless --import --quit 2>&1 || true
+          sleep 2
+
+      - name: Export Web build
+        run: |
+          mkdir -p export/web
+          godot --headless --export-release "Web" export/web/index.html 2>&1
+
+      - name: Add coi-serviceworker for SharedArrayBuffer
+        run: |
+          cd export/web
+          wget -q https://raw.githubusercontent.com/niccokunzmann/coi-serviceworker/master/coi-serviceworker.min.js
+          sed -i 's|<head>|<head>\n<script src="coi-serviceworker.min.js"></script>|' index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: export/web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -2,7 +2,10 @@
 .godot/
 
 # Exported builds
-export/
+export/web/
+export/android/
+export/windows/
+!export/.gitkeep
 *.pck
 *.zip
 
