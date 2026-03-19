@@ -1,4 +1,3 @@
-class_name TimeManager
 extends Node
 ## 時間管理器 - 控制遊戲內時間流逝
 
