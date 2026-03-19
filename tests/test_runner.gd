@@ -393,7 +393,7 @@ func test_company_system() -> void:
 	var base_rev: float = c.company["base_revenue_per_day"]
 	cs._recalculate_revenue()
 	assert_eq(c.company["base_revenue_per_day"], base_rev, "base_revenue 不變")
-	var rev_after_first := c.company["revenue_per_day"]
+	var rev_after_first: float = c.company["revenue_per_day"]
 	cs._recalculate_revenue()
 	# 呼叫兩次結果應相同（修復前會複利）
 	assert_eq(c.company["revenue_per_day"], rev_after_first, "重算營收結果穩定")
