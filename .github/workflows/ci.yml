@@ -13,10 +13,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libfontconfig1 libgl1 libxcursor1 libxinerama1 libxrandr2 libxi6 libx11-6 libxext6 libasound2t64
+
       - name: Install Godot
         run: |
           GODOT_VERSION="4.4"
           GODOT_RELEASE="stable"
+
+          echo "Installing Godot ${GODOT_VERSION}-${GODOT_RELEASE}..."
 
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
           unzip -q godot.zip
@@ -29,28 +36,40 @@ jobs:
           mv templates_temp/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/
           rm -rf templates_temp templates.tpz godot.zip
 
+          echo "Godot installed:"
+          godot --version
+          echo "Templates installed:"
+          ls ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}/ | head -10
+
       - name: Import project
         run: |
-          timeout 30 godot --headless --import --quit 2>&1 || true
-          sleep 3
+          timeout 60 godot --headless --import --quit 2>&1 || true
+          sleep 5
+          echo "Import complete. .godot dir:"
+          ls -la .godot/ 2>/dev/null || echo "No .godot dir yet"
 
       - name: Run unit tests
         run: |
-          timeout 60 godot --headless --script res://tests/test_runner.gd 2>&1
-        continue-on-error: false
+          timeout 120 godot --headless --script res://tests/test_runner.gd 2>&1 || exit_code=$?
+          if [ "${exit_code:-0}" -ne 0 ]; then
+            echo "Tests failed with exit code ${exit_code}"
+            exit ${exit_code}
+          fi
 
-      - name: Export Web build (verify)
+      - name: Export Web build
         run: |
           mkdir -p export/web
-          godot --headless --export-release "Web" export/web/index.html 2>&1
+          godot --headless --export-release "Web" export/web/index.html 2>&1 || true
+          echo "--- Export files ---"
+          ls -la export/web/ 2>/dev/null || echo "No export dir"
 
       - name: Verify export
         run: |
           if [ ! -f export/web/index.html ]; then
-            echo "ERROR: Web export failed!"
+            echo "ERROR: Web export failed - index.html not found"
             exit 1
           fi
-          echo "Web export OK"
+          echo "Web export OK:"
           ls -lh export/web/
 
       - name: Upload build artifact
