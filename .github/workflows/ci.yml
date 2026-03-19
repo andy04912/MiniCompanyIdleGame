@@ -1,26 +1,14 @@
-name: Deploy Web Build to GitHub Pages
+name: CI - Build & Test
 
 on:
   push:
+    branches: ["*"]
+  pull_request:
     branches: [main, master]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build-web:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,13 +18,11 @@ jobs:
           GODOT_VERSION="4.4"
           GODOT_RELEASE="stable"
 
-          # 下載 Godot editor
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
           unzip -q godot.zip
           chmod +x "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
           sudo mv "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64" /usr/local/bin/godot
 
-          # 下載 export templates
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz" -O templates.tpz
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
           unzip -q templates.tpz -d templates_temp
@@ -45,43 +31,31 @@ jobs:
 
       - name: Import project
         run: |
-          # Godot 需要先匯入專案來產生 .godot/ 資源快取
           timeout 30 godot --headless --import --quit 2>&1 || true
-          # 等待匯入完成
           sleep 3
 
-      - name: Export Web build
+      - name: Run unit tests
+        run: |
+          timeout 60 godot --headless --script res://tests/test_runner.gd 2>&1
+        continue-on-error: false
+
+      - name: Export Web build (verify)
         run: |
           mkdir -p export/web
           godot --headless --export-release "Web" export/web/index.html 2>&1
-          echo "--- Export output files ---"
-          ls -la export/web/
 
       - name: Verify export
         run: |
           if [ ! -f export/web/index.html ]; then
-            echo "ERROR: index.html not found! Export failed."
+            echo "ERROR: Web export failed!"
             exit 1
           fi
-          echo "Export successful! Files:"
+          echo "Web export OK"
           ls -lh export/web/
 
-      - name: Add coi-serviceworker for SharedArrayBuffer
-        run: |
-          cd export/web
-          # Godot 4 Web 需要 SharedArrayBuffer，而 SharedArrayBuffer 需要 COOP/COEP headers
-          # coi-serviceworker 可以在不支援這些 headers 的靜態託管上啟用它
-          wget -q https://raw.githubusercontent.com/niccokunzmann/coi-serviceworker/master/coi-serviceworker.min.js
-          sed -i 's|<head>|<head>\n    <script src="coi-serviceworker.min.js"></script>|' index.html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: export/web
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: web-build
+          path: export/web/
+          retention-days: 7
