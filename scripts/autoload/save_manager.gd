@@ -1,3 +1,4 @@
+class_name SaveManager
 extends Node
 ## 存檔管理器
 

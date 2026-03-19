@@ -1,3 +1,4 @@
+class_name GameManager
 extends Node
 ## 遊戲管理器 - 核心遊戲邏輯
 

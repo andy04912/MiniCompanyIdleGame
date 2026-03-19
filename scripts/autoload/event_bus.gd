@@ -1,3 +1,4 @@
+class_name EventBus
 extends Node
 ## 全域事件匯流排 - 用於解耦各系統之間的通訊
 
