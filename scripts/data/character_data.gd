@@ -71,20 +71,33 @@ func get_effective_stat(stat_name: String) -> float:
 func get_total_stats() -> float:
 	return intelligence + charisma + stamina + luck + leadership + creativity
 
+# 因為 CharacterData 是 RefCounted，無法在編譯時直接參考 EventBus autoload
+# 此 helper 在 runtime 動態取得 EventBus 實例
+static func _get_event_bus() -> Node:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("EventBus")
+
 func add_money(amount: float) -> void:
 	money += amount
 	if amount > 0:
 		total_earned += amount
-	EventBus.money_changed.emit(money)
+	var eb := _get_event_bus()
+	if eb:
+		eb.money_changed.emit(money)
 
 func add_skill_exp(skill_name: String, amount: float) -> void:
 	if skill_name not in skills:
 		skills[skill_name] = 0.0
 	var old_level := int(skills[skill_name])
-	skills[skill_name] += amount * prestige_bonuses.get("exp_multiplier", 1.0)
+	var multiplier: float = prestige_bonuses.get("exp_multiplier", 1.0)
+	skills[skill_name] += amount * multiplier
 	var new_level := int(skills[skill_name])
 	if new_level > old_level:
-		EventBus.skill_learned.emit(skill_name, new_level)
+		var eb := _get_event_bus()
+		if eb:
+			eb.skill_learned.emit(skill_name, new_level)
 
 func get_skill_level(skill_name: String) -> int:
 	return int(skills.get(skill_name, 0.0))

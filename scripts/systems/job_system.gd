@@ -100,7 +100,8 @@ func _on_day_passed(_day: int) -> void:
 	# 獲得工作經驗
 	var performance_factor := character.job_performance / 100.0
 	var intelligence_factor := character.get_effective_stat("intelligence") / 50.0
-	var exp_gain := (1.0 + performance_factor + intelligence_factor * 0.5) * character.prestige_bonuses.get("exp_multiplier", 1.0)
+	var exp_multiplier: float = character.prestige_bonuses.get("exp_multiplier", 1.0)
+	var exp_gain := (1.0 + performance_factor + intelligence_factor * 0.5) * exp_multiplier
 	_work_experience_accumulated += exp_gain
 	character.work_experience += exp_gain
 	_days_worked += 1

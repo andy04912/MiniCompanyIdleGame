@@ -116,11 +116,11 @@ func _daily_random_events() -> void:
 		EventBus.show_notification.emit("運氣不錯！撿到了 $%.0f" % bonus, "positive")
 
 func format_money(amount: float) -> String:
-	if amount >= 1_000_000_000:
+	if amount >= 100_000_000:  # 1億
 		return "%.2f億" % (amount / 100_000_000.0)
-	elif amount >= 10_000_000:
+	elif amount >= 10_000_000:  # 1000萬
 		return "%.0f萬" % (amount / 10_000.0)
-	elif amount >= 10_000:
+	elif amount >= 10_000:  # 1萬
 		return "%.1f萬" % (amount / 10_000.0)
 	else:
 		return "$%.0f" % amount

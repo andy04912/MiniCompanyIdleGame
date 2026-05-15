@@ -25,18 +25,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libfontconfig1 libgl1 libxcursor1 libxinerama1 libxrandr2 libxi6 libx11-6 libxext6 libasound2t64
+
       - name: Install Godot
         run: |
           GODOT_VERSION="4.4"
           GODOT_RELEASE="stable"
 
-          # 下載 Godot editor
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64.zip" -O godot.zip
           unzip -q godot.zip
           chmod +x "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64"
           sudo mv "Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_linux.x86_64" /usr/local/bin/godot
 
-          # 下載 export templates
           wget -q "https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-${GODOT_RELEASE}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE}_export_templates.tpz" -O templates.tpz
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
           unzip -q templates.tpz -d templates_temp
@@ -45,17 +48,13 @@ jobs:
 
       - name: Import project
         run: |
-          # Godot 需要先匯入專案來產生 .godot/ 資源快取
-          timeout 30 godot --headless --import --quit 2>&1 || true
-          # 等待匯入完成
-          sleep 3
+          timeout 60 godot --headless --import --quit 2>&1 || true
+          sleep 5
 
       - name: Export Web build
         run: |
           mkdir -p export/web
-          godot --headless --export-release "Web" export/web/index.html 2>&1
-          echo "--- Export output files ---"
-          ls -la export/web/
+          godot --headless --export-release "Web" export/web/index.html 2>&1 || true
 
       - name: Verify export
         run: |
@@ -63,14 +62,12 @@ jobs:
             echo "ERROR: index.html not found! Export failed."
             exit 1
           fi
-          echo "Export successful! Files:"
+          echo "Export successful!"
           ls -lh export/web/
 
       - name: Add coi-serviceworker for SharedArrayBuffer
         run: |
           cd export/web
-          # Godot 4 Web 需要 SharedArrayBuffer，而 SharedArrayBuffer 需要 COOP/COEP headers
-          # coi-serviceworker 可以在不支援這些 headers 的靜態託管上啟用它
           wget -q https://raw.githubusercontent.com/niccokunzmann/coi-serviceworker/master/coi-serviceworker.min.js
           sed -i 's|<head>|<head>\n    <script src="coi-serviceworker.min.js"></script>|' index.html
 

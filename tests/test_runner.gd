@@ -6,6 +6,12 @@ var _pass_count: int = 0
 var _fail_count: int = 0
 var _current_test: String = ""
 
+# Autoload 參考（從場景樹取得，避免 --script 模式下編譯錯誤）
+var TimeManager
+var GameManager
+var SaveManager
+var EventBus
+
 func _init() -> void:
 	print("\n========================================")
 	print("  人生模擬器 - 單元測試")
@@ -14,6 +20,12 @@ func _init() -> void:
 	# 等待 autoloads 初始化
 	await process_frame
 	await process_frame
+
+	# 從場景樹取得 autoload 單例
+	TimeManager = root.get_node("TimeManager")
+	GameManager = root.get_node("GameManager")
+	SaveManager = root.get_node("SaveManager")
+	EventBus = root.get_node("EventBus")
 
 	test_character_data()
 	test_job_database()
@@ -223,7 +235,7 @@ func test_time_manager() -> void:
 	assert_eq(TimeManager.current_day, 1, "初始日 1")
 
 	# 測試日期字串
-	var date_str := TimeManager.get_date_string()
+	var date_str = TimeManager.get_date_string()
 	assert_true(date_str.contains("2026"), "日期包含年份")
 
 	# 測試速度切換
@@ -245,7 +257,7 @@ func test_time_manager() -> void:
 	TimeManager.current_month = 3
 	TimeManager.current_day = 15
 	TimeManager.total_days_played = 500
-	var saved := TimeManager.get_save_data()
+	var saved = TimeManager.get_save_data()
 	TimeManager.current_year = 2026
 	TimeManager.current_month = 6
 	TimeManager.current_day = 1
@@ -320,12 +332,12 @@ func test_job_system() -> void:
 	begin_test("JobSystem 工作系統")
 
 	GameManager.start_new_game("工作測試", CharacterData.Gender.MALE)
-	var js := GameManager.job_system
-	var c := GameManager.character
+	var js = GameManager.job_system
+	var c = GameManager.character
 
 	# 測試應徵工作
 	assert_true(c.current_job.is_empty(), "初始無工作")
-	var result := js.apply_for_job("pt_convenience")
+	var result = js.apply_for_job("pt_convenience")
 	assert_true(result, "便利商店應徵成功")
 	assert_false(c.current_job.is_empty(), "有工作了")
 	assert_eq(c.current_job.get("name", ""), "便利商店店員", "工作名稱")
@@ -341,7 +353,7 @@ func test_job_system() -> void:
 	assert_true(c.current_job.is_empty(), "辭職後無工作")
 
 	# 測試應徵需要條件的工作（應失敗）
-	var result2 := js.apply_for_job("ft_programmer_senior")
+	var result2 = js.apply_for_job("ft_programmer_senior")
 	assert_false(result2, "資深工程師需求不足")
 
 	# 測試 reset
@@ -358,8 +370,8 @@ func test_company_system() -> void:
 	begin_test("CompanySystem 公司系統")
 
 	GameManager.start_new_game("公司測試", CharacterData.Gender.MALE)
-	var cs := GameManager.company_system
-	var c := GameManager.character
+	var cs = GameManager.company_system
+	var c = GameManager.character
 
 	# 新角色不能直接創業（技能不足）
 	var options := CompanyDatabase.get_startup_options()
@@ -376,15 +388,15 @@ func test_company_system() -> void:
 
 	assert_false(c.has_company, "初始無公司")
 
-	var result := cs.found_company(food_option)
+	var result = cs.found_company(food_option)
 	assert_true(result, "小吃攤創業成功")
 	assert_true(c.has_company, "有公司了")
 	assert_eq(c.company.get("name", ""), "小吃攤", "公司名稱")
 	assert_lt(c.money, 100000.0, "扣了創業費用")
 
 	# 測試僱用員工
-	var money_before := c.money
-	var hire_result := cs.hire_employee()
+	var money_before = c.money
+	var hire_result = cs.hire_employee()
 	assert_true(hire_result, "僱用成功")
 	assert_eq(c.company["employees"], 1, "1個員工")
 	assert_lt(c.money, money_before, "扣了僱用費用")
@@ -393,17 +405,17 @@ func test_company_system() -> void:
 	var base_rev: float = c.company["base_revenue_per_day"]
 	cs._recalculate_revenue()
 	assert_eq(c.company["base_revenue_per_day"], base_rev, "base_revenue 不變")
-	var rev_after_first := c.company["revenue_per_day"]
+	var rev_after_first: float = c.company["revenue_per_day"]
 	cs._recalculate_revenue()
 	# 呼叫兩次結果應相同（修復前會複利）
 	assert_eq(c.company["revenue_per_day"], rev_after_first, "重算營收結果穩定")
 
 	# 測試日利潤
-	var profit := cs.get_daily_profit()
+	var profit = cs.get_daily_profit()
 	assert_gt(profit, 0.0, "日利潤 > 0")
 
 	# 測試開分店
-	var branch_result := cs.open_branch()
+	var branch_result = cs.open_branch()
 	assert_true(branch_result, "開分店成功")
 	assert_eq(c.company["branches"], 2, "2間店")
 
@@ -415,8 +427,8 @@ func test_education_system() -> void:
 	begin_test("EducationSystem 教育系統")
 
 	GameManager.start_new_game("教育測試", CharacterData.Gender.FEMALE)
-	var es := GameManager.education_system
-	var c := GameManager.character
+	var es = GameManager.education_system
+	var c = GameManager.character
 
 	assert_false(c.has_masters, "初始無碩士")
 	assert_false(c.is_studying, "初始未進修")
@@ -451,8 +463,8 @@ func test_relationship_system() -> void:
 	begin_test("RelationshipSystem 感情系統")
 
 	GameManager.start_new_game("感情測試", CharacterData.Gender.MALE)
-	var rs := GameManager.relationship_system
-	var c := GameManager.character
+	var rs = GameManager.relationship_system
+	var c = GameManager.character
 
 	assert_eq(c.relationship_status, "single", "初始單身")
 	assert_true(c.partner.is_empty(), "無伴侶")
@@ -479,7 +491,7 @@ func test_relationship_system() -> void:
 
 	# 結婚後可以嘗試生小孩
 	# （因為隨機性，可能成功也可能失敗，只測試不會出錯）
-	var initial_children := c.children.size()
+	var initial_children = c.children.size()
 	rs.try_have_child()
 	assert_gte(float(c.children.size()), float(initial_children), "子女數不減少")
 
@@ -495,14 +507,14 @@ func test_prestige_system() -> void:
 	begin_test("PrestigeSystem 轉生系統")
 
 	GameManager.start_new_game("轉生測試", CharacterData.Gender.MALE)
-	var ps := GameManager.prestige_system
-	var c := GameManager.character
+	var ps = GameManager.prestige_system
+	var c = GameManager.character
 
 	# 新角色不能轉生
 	assert_false(ps.can_prestige(), "新角色不能轉生")
 
 	# 描述應包含條件不足訊息
-	var desc := ps.get_prestige_description()
+	var desc = ps.get_prestige_description()
 	assert_true(desc.contains("不足"), "描述包含條件不足")
 
 	# 設定符合條件的狀態
@@ -512,7 +524,7 @@ func test_prestige_system() -> void:
 	assert_true(ps.can_prestige(), "符合條件可轉生")
 
 	# 取得轉生資訊
-	var info := ps.get_prestige_info()
+	var info = ps.get_prestige_info()
 	assert_eq(info["prestige_count"], 1, "第1次轉生")
 	assert_gt(info.get("exp_multiplier", 0.0), 1.0, "經驗倍率 > 1")
 	assert_gt(info.get("starting_money_bonus", 0.0), 0.0, "有初始資金加成")
@@ -540,7 +552,7 @@ func test_save_manager() -> void:
 	# 修改後讀取
 	GameManager.character.money = 0.0
 	GameManager.character.intelligence = 0.0
-	var loaded := SaveManager.load_game()
+	var loaded = SaveManager.load_game()
 	assert_true(loaded, "讀取成功")
 	assert_eq(GameManager.character.money, 12345.0, "金錢還原")
 	assert_eq(GameManager.character.intelligence, 30.0, "智力還原")
@@ -552,7 +564,7 @@ func test_save_manager() -> void:
 	# 轉生資料
 	var prestige_data := {"prestige_count": 2, "exp_multiplier": 1.2}
 	SaveManager.save_prestige_data(prestige_data)
-	var loaded_prestige := SaveManager.load_prestige_data()
+	var loaded_prestige = SaveManager.load_prestige_data()
 	assert_eq(loaded_prestige.get("prestige_count", 0), 2, "轉生次數還原")
 
 	GameManager.reset_all()
