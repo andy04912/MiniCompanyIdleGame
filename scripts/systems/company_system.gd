@@ -50,7 +50,7 @@ func hire_employee() -> bool:
 		EventBus.show_notification.emit("已達到最大員工數量！需要升級公司。", "negative")
 		return false
 
-	var hire_cost := 500.0 + company["employees"] * 200.0
+	var hire_cost: float = 500.0 + float(company["employees"]) * 200.0
 	if character.money < hire_cost:
 		EventBus.show_notification.emit("資金不足！僱用費用：%s" % GameManager.format_money(hire_cost), "negative")
 		return false
@@ -104,7 +104,7 @@ func open_branch() -> bool:
 		return false
 
 	var company: Dictionary = character.company
-	var branch_cost := 10000.0 * (company["branches"] + 1) * (1.0 + company["tier"] * 0.5)
+	var branch_cost: float = 10000.0 * (float(company["branches"]) + 1.0) * (1.0 + float(company["tier"]) * 0.5)
 
 	if character.money < branch_cost:
 		EventBus.show_notification.emit("資金不足！開分店費用：%s" % GameManager.format_money(branch_cost), "negative")
@@ -124,7 +124,7 @@ func invest_marketing() -> bool:
 		return false
 
 	var company: Dictionary = character.company
-	var marketing_cost := 2000.0 * (company["marketing_level"] + 1)
+	var marketing_cost: float = 2000.0 * (float(company["marketing_level"]) + 1.0)
 
 	if character.money < marketing_cost:
 		EventBus.show_notification.emit("資金不足！行銷費用：%s" % GameManager.format_money(marketing_cost), "negative")
@@ -143,7 +143,7 @@ func improve_product() -> bool:
 		return false
 
 	var company: Dictionary = character.company
-	var improve_cost := 1500.0 * (1.0 + company["product_quality"] / 10.0)
+	var improve_cost: float = 1500.0 * (1.0 + float(company["product_quality"]) / 10.0)
 
 	if character.money < improve_cost:
 		EventBus.show_notification.emit("資金不足！", "negative")
@@ -165,16 +165,16 @@ func _recalculate_revenue() -> void:
 	var base: float = company.get("base_revenue_per_day", 100.0)
 
 	# 員工加成
-	var employee_bonus := 1.0 + company["employees"] * 0.15
+	var employee_bonus: float = 1.0 + float(company["employees"]) * 0.15
 
 	# 分店加成
 	var branch_bonus := float(company["branches"])
 
 	# 行銷加成
-	var marketing_bonus := 1.0 + company["marketing_level"] * 0.1
+	var marketing_bonus: float = 1.0 + float(company["marketing_level"]) * 0.1
 
 	# 品質加成
-	var quality_bonus := 1.0 + company["product_quality"] / 100.0
+	var quality_bonus: float = 1.0 + float(company["product_quality"]) / 100.0
 
 	# 領導力加成
 	var leadership_bonus := 1.0 + character.get_effective_stat("leadership") / 200.0
